@@ -35,6 +35,7 @@ export default function Home() {
 
   const { toast } = useToast()
   const { isLogin, token } = useIsLogin()
+  const { latitude, longitude } = useGetLocation()
 
   const store = useStore((state) => state)
   const { user, setUser, history, setHistory } = store
@@ -42,10 +43,6 @@ export default function Home() {
   const [showMap, setShowMap] = useState(true)
 
   const descRef = useRef<HTMLTextAreaElement>(null)
-
-  const location = localStorage.getItem('location')
-  const parseLocation = location != null ? JSON.parse(location!) : {}
-  const { latitude, longitude } = parseLocation
 
   async function poop() {
     if (descRef.current?.value?.length! < 3) {
@@ -179,49 +176,37 @@ export default function Home() {
         {/* Button */}
 
         <h3 className='text-md text-black mb-2'>
-          {location != null ? (
-            <>
-              {' '}
-              Udah <strong>pup</strong> dimana aja bre?
-            </>
-          ) : (
-            'aktifkan lokasi dulu bre \nbiar bisa liat dimana aja udah pup'
-          )}
+          Udah <strong>pup</strong> dimana aja bre?
         </h3>
 
         {/* Map */}
-        {showMap
-          ? location != null && (
-              <MapContainer
-                center={[Number(latitude), Number(longitude)]}
-                zoom={14}
-                scrollWheelZoom={false}
-                id='map'>
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                />
+        {showMap ? (
+          <MapContainer
+            center={[Number(latitude), Number(longitude)]}
+            zoom={14}
+            scrollWheelZoom={false}
+            id='map'>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
 
-                {history.length > 0 &&
-                  history.map((item) => (
-                    <Marker
-                      key={item.id}
-                      icon={pooIcon}
-                      position={[
-                        Number(item.latitude),
-                        Number(item.longitude),
-                      ]}>
-                      <Popup>
-                        <p className='text-xs text-black font-medium'>
-                          {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
-                        </p>
-                        <p className='text-sm'>{item.description}</p>
-                      </Popup>
-                    </Marker>
-                  ))}
-              </MapContainer>
-            )
-          : null}
+            {history.length > 0 &&
+              history.map((item) => (
+                <Marker
+                  key={item.id}
+                  icon={pooIcon}
+                  position={[Number(item.latitude), Number(item.longitude)]}>
+                  <Popup>
+                    <p className='text-xs text-black font-medium'>
+                      {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
+                    </p>
+                    <p className='text-sm'>{item.description}</p>
+                  </Popup>
+                </Marker>
+              ))}
+          </MapContainer>
+        ) : null}
         {/* Map */}
       </section>
     </>

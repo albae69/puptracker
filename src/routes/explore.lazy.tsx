@@ -7,6 +7,7 @@ import Header from '@/components/header'
 import dayjs from 'dayjs'
 import { PupHistory } from 'types'
 import { divIcon } from 'leaflet'
+import useGetLocation from '@/utils/location'
 
 export const Route = createLazyFileRoute('/explore')({
   component: Explore,
@@ -17,10 +18,7 @@ const pooIcon = divIcon({ html: '💩', className: 'text-2xl' })
 function Explore() {
   const [data, setData] = useState<PupHistory[] | []>([])
 
-  const location = localStorage.getItem('location')
-  const parseLocation = location != null ? JSON.parse(location!) : {}
-  const { latitude, longitude } = parseLocation
-  console.log(location)
+  const { latitude, longitude } = useGetLocation()
 
   useEffect(() => {
     ;(async () => {
@@ -41,45 +39,35 @@ function Explore() {
       <section className='p-4'>
         <h3 className='text-2xl font-bold text-black mb-2'>Explore</h3>
 
-        <h3 className='text-md text-black mb-2'>
-          {location != null ? (
-            <>
-              <p className='text-sm mb-4'>
-                lihat semua tempat dimana saja yang lain pada pup.
-              </p>
-            </>
-          ) : (
-            'aktifkan lokasi dulu bre'
-          )}
-        </h3>
+        <p className='text-sm mb-4'>
+          lihat semua tempat dimana saja yang lain pada pup.
+        </p>
 
-        {location != null && (
-          <MapContainer
-            zoom={14}
-            scrollWheelZoom={false}
-            id='map-explore'
-            center={[Number(latitude), Number(longitude)]}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            />
+        <MapContainer
+          zoom={14}
+          scrollWheelZoom={false}
+          id='map-explore'
+          center={[Number(latitude), Number(longitude)]}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
 
-            {data.map((item) => (
-              <Marker
-                key={item.id}
-                icon={pooIcon}
-                position={[Number(item.latitude), Number(item.longitude)]}>
-                <Popup>
-                  <p className='text-xs text-black font-medium'>
-                    {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
-                  </p>
-                  <p className='text-sm'>{item.description}</p>
-                  <p className='text-sm'>- {item.users?.name}</p>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
-        )}
+          {data.map((item) => (
+            <Marker
+              key={item.id}
+              icon={pooIcon}
+              position={[Number(item.latitude), Number(item.longitude)]}>
+              <Popup>
+                <p className='text-xs text-black font-medium'>
+                  {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
+                </p>
+                <p className='text-sm'>{item.description}</p>
+                <p className='text-sm'>- {item.users?.name}</p>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       </section>
     </>
   )
