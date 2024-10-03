@@ -44,8 +44,8 @@ export default function Home() {
   const descRef = useRef<HTMLTextAreaElement>(null)
 
   const location = localStorage.getItem('location')
-  const parseLocation = JSON.parse(location!)
-  const { latitude, longitude } = parseLocation ?? {}
+  const parseLocation = location != null ? JSON.parse(location!) : {}
+  const { latitude, longitude } = parseLocation
 
   async function poop() {
     if (descRef.current?.value?.length! < 3) {
@@ -148,12 +148,10 @@ export default function Home() {
         <Dialog
           onOpenChange={(open) => {
             setShowMap(!open)
-          }}
-        >
+          }}>
           <DialogTrigger
             className='w-full py-8 text-2xl animate-bounce'
-            onClick={() => setShowMap(false)}
-          >
+            onClick={() => setShowMap(false)}>
             💩
           </DialogTrigger>
           <DialogContent>
@@ -181,7 +179,7 @@ export default function Home() {
         {/* Button */}
 
         <h3 className='text-md text-black mb-2'>
-          {parseLocation != null ? (
+          {location != null ? (
             <>
               {' '}
               Udah <strong>pup</strong> dimana aja bre?
@@ -193,13 +191,12 @@ export default function Home() {
 
         {/* Map */}
         {showMap
-          ? parseLocation != null && (
+          ? location != null && (
               <MapContainer
                 center={[Number(latitude), Number(longitude)]}
                 zoom={14}
                 scrollWheelZoom={false}
-                id='map'
-              >
+                id='map'>
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -210,8 +207,10 @@ export default function Home() {
                     <Marker
                       key={item.id}
                       icon={pooIcon}
-                      position={[Number(item.latitude), Number(item.longitude)]}
-                    >
+                      position={[
+                        Number(item.latitude),
+                        Number(item.longitude),
+                      ]}>
                       <Popup>
                         <p className='text-xs text-black font-medium'>
                           {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
