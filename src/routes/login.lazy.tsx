@@ -67,7 +67,7 @@ export default function Login() {
         placeholder='Password'
       />
       <Button className='mt-2 mb-4' onClick={login}>
-        {status == 'loading' ? 'loading...' : 'Masuk'}
+        {status == 'loading' ? '💩' : 'Masuk'}
       </Button>
       {isError && <ErrorMessage message={isError.message} />}
       <p className='text-sm text-center'>

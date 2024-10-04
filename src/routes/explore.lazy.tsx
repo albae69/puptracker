@@ -16,9 +16,12 @@ export const Route = createLazyFileRoute('/explore')({
 const pooIcon = divIcon({ html: '💩', className: 'text-2xl' })
 
 function Explore() {
-  const [data, setData] = useState<PupHistory[] | []>([])
+  const location = useGetLocation()
+  const parseLocation = location
+    ? JSON.parse(localStorage.getItem('location')!)
+    : null
 
-  const { latitude, longitude } = useGetLocation()
+  const [data, setData] = useState<PupHistory[] | []>([])
 
   useEffect(() => {
     ;(async () => {
@@ -40,34 +43,43 @@ function Explore() {
         <h3 className='text-2xl font-bold text-black mb-2'>Explore</h3>
 
         <p className='text-sm mb-4'>
-          lihat semua tempat dimana saja yang lain pada pup.
+          {parseLocation != null
+            ? 'lihat semua tempat dimana saja yang lain pada pup.'
+            : 'aktifin lokasi dulu bre 💩'}
         </p>
 
-        <MapContainer
-          zoom={14}
-          scrollWheelZoom={false}
-          id='map-explore'
-          center={[Number(latitude), Number(longitude)]}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-          />
+        {parseLocation != null && (
+          <MapContainer
+            zoom={14}
+            scrollWheelZoom={false}
+            id='map-explore'
+            center={[
+              Number(parseLocation?.latitude),
+              Number(parseLocation?.longitude),
+            ]}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
 
-          {data.map((item) => (
-            <Marker
-              key={item.id}
-              icon={pooIcon}
-              position={[Number(item.latitude), Number(item.longitude)]}>
-              <Popup>
-                <p className='text-xs text-black font-medium'>
-                  {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
-                </p>
-                <p className='text-sm'>{item.description}</p>
-                <p className='text-sm'>- {item.users?.name}</p>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+            {data.map((item) => (
+              <Marker
+                key={item.id}
+                icon={pooIcon}
+                position={[Number(item.latitude), Number(item.longitude)]}
+              >
+                <Popup>
+                  <p className='text-xs text-black font-medium'>
+                    {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
+                  </p>
+                  <p className='text-sm'>{item.description}</p>
+                  <p className='text-sm'>- {item.users?.name}</p>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        )}
       </section>
     </>
   )
