@@ -16,6 +16,9 @@
 #map-explore {
   height: 400px;
 }
+#map-list {
+  height: 250px;
+}
 
 @layer base {
   :root {
