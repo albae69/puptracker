@@ -44,8 +44,8 @@ function Explore() {
 
         <p className='text-sm mb-4'>
           {parseLocation != null
-            ? 'lihat semua tempat dimana saja yang lain pada pup.'
-            : 'aktifin lokasi dulu bre 💩'}
+            ? 'lihat semua tempat dimana saja yang lain pada 💩'
+            : 'kalau kamu membaca ini, berarti aplikasi gagal mendapatkan lokasi mu, emang 💩'}
         </p>
 
         {parseLocation != null && (

@@ -55,8 +55,8 @@ export default function Home() {
     const res = await supabase.from('pup_history').insert([
       {
         user_id: user?.id,
-        latitude: null,
-        longitude: null,
+        latitude: parseLocation?.latitude,
+        longitude: parseLocation?.longitude,
         description: descRef.current?.value,
       },
     ])
@@ -186,7 +186,7 @@ export default function Home() {
               Udah <strong>💩</strong> dimana aja bre?
             </>
           ) : (
-            'aktifin lokasi dulu bre 💩'
+            'kalau kamu membaca ini, berarti aplikasi gagal mendapatkan lokasi mu, emang 💩'
           )}
         </h3>
 

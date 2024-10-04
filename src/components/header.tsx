@@ -18,9 +18,7 @@ export default function Header() {
 
       {isLogin && (
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className='h-7 w-7 bg-gray-400 rounded-full'></div>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
           <DropdownMenuContent>
             <Link to='/explore'>
               <DropdownMenuItem className='cursor-pointer'>
