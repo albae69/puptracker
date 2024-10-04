@@ -21,11 +21,16 @@ function Index() {
     <section className='h-screen flex flex-col justify-center  text-center p-4'>
       <h1 className='text-2xl text-black font-bold mb-4'>Berakin 💩</h1>
       <p className='text-sm'>kamu udah 💩 belum hari ini?</p>
-      <p className='text-sm'>
+      <p className='text-sm mb-4'>
         catat untuk pastikan bahwa kamu sehat dengan 💩 setiap hari
       </p>
-      <Link to='/login'>
-        <Button className='mt-8 animate-spin'>Mashhoook</Button>
+      <Link to='/explore' className='w-full'>
+        <Button className='bg-white text-black border shadow-md my-2 w-full hover:bg-gray-100'>
+          Explore
+        </Button>
+      </Link>
+      <Link to='/login' className='w-full'>
+        <Button className='w-full'>Masuk</Button>
       </Link>
     </section>
   )
