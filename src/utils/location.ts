@@ -1,20 +1,11 @@
-import { useState } from 'react'
-
 export default function useGetLocation() {
-  const [coords, setCoords] = useState<GeolocationCoordinates | null>(null)
-
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
-      setCoords(position.coords)
+      localStorage.setItem('location', JSON.stringify(position.coords))
     })
+    return true
   } else {
     alert('failed to get current location')
+    return false
   }
-  let latitude, longitude
-
-  if (coords != null) {
-    return { latitude, longitude }
-  }
-
-  return { latitude: 3.595196, longitude: 98.672226 }
 }

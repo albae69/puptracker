@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <header className='flex items-center justify-between p-4'>
       <Link to={isLogin ? '/home' : '/'}>
-        <h1 className='text-2xl font-bold text-black'>Puptracker</h1>
+        <h1 className='text-2xl font-bold text-black'>Berakin 💩</h1>
       </Link>
 
       {isLogin && (

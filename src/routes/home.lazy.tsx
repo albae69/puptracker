@@ -31,11 +31,13 @@ export const Route = createLazyFileRoute('/home')({
 const pooIcon = divIcon({ html: '💩', className: 'text-2xl' })
 
 export default function Home() {
-  useGetLocation()
+  const location = useGetLocation()
+  const parseLocation = location
+    ? JSON.parse(localStorage.getItem('location')!)
+    : null
 
   const { toast } = useToast()
   const { isLogin, token } = useIsLogin()
-  const { latitude, longitude } = useGetLocation()
 
   const store = useStore((state) => state)
   const { user, setUser, history, setHistory } = store
@@ -53,8 +55,8 @@ export default function Home() {
     const res = await supabase.from('pup_history').insert([
       {
         user_id: user?.id,
-        latitude: latitude,
-        longitude: longitude,
+        latitude: null,
+        longitude: null,
         description: descRef.current?.value,
       },
     ])
@@ -62,7 +64,7 @@ export default function Home() {
     if (res.status == 201) {
       toast({
         title: 'Yeay',
-        description: 'Congrats telah berak hari ini!!',
+        description: 'Congrats telah 💩 hari ini!!',
       })
       await getPupHistory(user?.id!)
       setShowMap(true)
@@ -117,7 +119,7 @@ export default function Home() {
 
       <section className='p-4'>
         <h3 className='mb-2 text-sm'>
-          Halo <strong>{user?.name}</strong>, udah pup kah hari ini?
+          Halo <strong>{user?.name}</strong>, udah 💩 kah hari ini?
         </h3>
 
         {/* Card */}
@@ -145,15 +147,17 @@ export default function Home() {
         <Dialog
           onOpenChange={(open) => {
             setShowMap(!open)
-          }}>
+          }}
+        >
           <DialogTrigger
             className='w-full py-8 text-2xl animate-bounce'
-            onClick={() => setShowMap(false)}>
+            onClick={() => setShowMap(false)}
+          >
             💩
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Sudah selesai pup?</DialogTitle>
+              <DialogTitle>Sudah selesai 💩?</DialogTitle>
               <DialogDescription>
                 Ceritakan pengalaman mu melaksanakan{' '}
                 <strong className='text-black font-medium'>Ritual</strong> hari
@@ -166,7 +170,7 @@ export default function Home() {
                 placeholder='gelaa,udah nahan dari sejam lalu akhirnya nemu toilet..'
               />
               <DialogClose asChild onClick={poop}>
-                <Button className='w-full mt-4 bg-white hover:bg-white text-xl'>
+                <Button className='w-full mt-4 bg-white hover:bg-white text-xl border shadow-md'>
                   💩
                 </Button>
               </DialogClose>
@@ -176,37 +180,51 @@ export default function Home() {
         {/* Button */}
 
         <h3 className='text-md text-black mb-2'>
-          Udah <strong>pup</strong> dimana aja bre?
+          {parseLocation != null ? (
+            <>
+              {' '}
+              Udah <strong>💩</strong> dimana aja bre?
+            </>
+          ) : (
+            'aktifin lokasi dulu bre 💩'
+          )}
         </h3>
 
         {/* Map */}
-        {showMap ? (
-          <MapContainer
-            center={[Number(latitude), Number(longitude)]}
-            zoom={14}
-            scrollWheelZoom={false}
-            id='map'>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            />
+        {showMap
+          ? parseLocation != null && (
+              <MapContainer
+                center={[
+                  Number(parseLocation?.latitude),
+                  Number(parseLocation?.longitude),
+                ]}
+                zoom={14}
+                scrollWheelZoom={false}
+                id='map'
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                />
 
-            {history.length > 0 &&
-              history.map((item) => (
-                <Marker
-                  key={item.id}
-                  icon={pooIcon}
-                  position={[Number(item.latitude), Number(item.longitude)]}>
-                  <Popup>
-                    <p className='text-xs text-black font-medium'>
-                      {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
-                    </p>
-                    <p className='text-sm'>{item.description}</p>
-                  </Popup>
-                </Marker>
-              ))}
-          </MapContainer>
-        ) : null}
+                {history.length > 0 &&
+                  history.map((item) => (
+                    <Marker
+                      key={item.id}
+                      icon={pooIcon}
+                      position={[Number(item.latitude), Number(item.longitude)]}
+                    >
+                      <Popup>
+                        <p className='text-xs text-black font-medium'>
+                          {dayjs(item.created_at).format('DD MMM YYYY HH:mm')}
+                        </p>
+                        <p className='text-sm'>{item.description}</p>
+                      </Popup>
+                    </Marker>
+                  ))}
+              </MapContainer>
+            )
+          : null}
         {/* Map */}
       </section>
     </>

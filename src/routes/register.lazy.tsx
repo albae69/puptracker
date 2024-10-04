@@ -86,7 +86,7 @@ export default function Register() {
         placeholder='Password'
       />
       <Button onClick={register} className='my-4'>
-        {status == 'loading' ? 'loading...' : 'Daftar'}
+        {status == 'loading' ? '💩' : 'Daftar'}
       </Button>
 
       {isError && <ErrorMessage message={isError.message} />}
